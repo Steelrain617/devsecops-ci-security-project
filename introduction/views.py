@@ -147,35 +147,38 @@ def sql(request):
 def sql_lab(request):
     if request.user.is_authenticated:
 
-        name=request.POST.get('name')
-
-        password=request.POST.get('pass')
+        name = request.POST.get('name')
+        password = request.POST.get('pass')
 
         if name:
-
             if login.objects.filter(user=name):
+                val = login.objects.filter(
+                    user=name,
+                    password=password,
+                ).first()
 
-val = login.objects.filter(
-    user=name,
-    password=password,
-).first()
-
-if val:
-    return render(
-        request,
-        "Lab/SQL/sql_lab.html",
-        {"user1": val.user},
-    )
-
-return render(
-    request,
-    "Lab/SQL/sql_lab.html",
-    {"wrongpass": password},
-)
-else:
-                return render(request, 'Lab/SQL/sql_lab.html',{"no": "User not found"})
+                if val:
+                    return render(
+                        request,
+                        "Lab/SQL/sql_lab.html",
+                    )
+                else:
+                    return render(
+                        request,
+                        "Lab/SQL/sql_lab.html",
+                        {"wrongpass": password},
+                    )
+            else:
+                return render(
+                    request,
+                    'Lab/SQL/sql_lab.html',
+                    {"no": "User not found"}
+                )
         else:
-            return render(request, 'Lab/SQL/sql_lab.html')
+            return render(
+                request,
+                'Lab/SQL/sql_lab.html'
+            )
     else:
         return redirect('login')
 
